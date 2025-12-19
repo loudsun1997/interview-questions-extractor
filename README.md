@@ -47,7 +47,7 @@ sudo apt install python3 python3-pip ffmpeg
 2. **Install Python dependencies**
 
 ```bash
-pip install openai-whisper
+pip install openai-whisper tqdm
 ```
 
 Or install from requirements file:
