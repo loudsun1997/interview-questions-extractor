@@ -18,7 +18,7 @@ brew install python ffmpeg
 
 1. **Install Python**
    - Download from [python.org](https://www.python.org/downloads/)
-   - During installation, check ✅ "Add Python to PATH"
+   - During installation, check "Add Python to PATH"
 
 2. **Install FFmpeg**
    - Using Chocolatey (recommended):
@@ -72,13 +72,13 @@ python transcribe.py /path/to/your/video.mp4
 python transcribe.py /path/to/your/video.mp4 --model base
 ```
 
-| Model  | Size   | Speed    | Accuracy |
-|--------|--------|----------|----------|
-| tiny   | ~39 MB | Fastest  | Lower    |
-| base   | ~74 MB | Fast     | Good     |
-| small  | ~244 MB| Medium   | Better   |
-| medium | ~769 MB| Slow     | High     |
-| large  | ~1.5 GB| Slowest  | Highest  |
+| Model  | Size    | Speed   | Accuracy |
+|--------|---------|---------|----------|
+| tiny   | ~39 MB  | Fastest | Lower    |
+| base   | ~74 MB  | Fast    | Good     |
+| small  | ~244 MB | Medium  | Better   |
+| medium | ~769 MB | Slow    | High     |
+| large  | ~1.5 GB | Slowest | Highest  |
 
 ### Examples
 
@@ -101,8 +101,8 @@ The transcript is saved as `{filename}_transcript.txt` in the same directory as 
 
 ```
 Loading Whisper model ('base')...
-Transcribing 'interview.mp4'...
-100%|████████████████████████████████| 309239/309239 [08:07<00:00, 634.52frames/s]
+Loading audio...
+Transcribing: |=========================| 100% [05:04<00:00]
 
 --- Transcription Complete ---
 Saved to: interview_transcript.txt
@@ -147,11 +147,10 @@ Make sure FFmpeg is installed and in your system PATH. Restart your terminal aft
 
 ## Final Note
 
-After running it for the first time, the whole process will only take **2 minutes of attention** — just run the command, wait for it to finish, and paste into ChatGPT!
+After running it for the first time, the whole process will only take **2 minutes of attention** - just run the command, wait for it to finish, and paste into ChatGPT!
 
 ---
 
 ## License
 
 MIT
-
