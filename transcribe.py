@@ -6,7 +6,7 @@ import threading
 import time
 from tqdm import tqdm
 
-def transcribe_video(video_path, model_size="base", output_format="txt"):
+def transcribe_video(video_path, model_size="medium", output_format="txt"):
     """
     Transcribes a video file using OpenAI's Whisper model.
     """
@@ -100,7 +100,7 @@ def transcribe_video(video_path, model_size="base", output_format="txt"):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Transcribe video to English text using Whisper.")
     parser.add_argument("video_path", type=str, help="Path to the video file.")
-    parser.add_argument("--model", type=str, default="base", choices=["tiny", "base", "small", "medium", "large"], help="Model size (default: base).")
+    parser.add_argument("--model", type=str, default="medium", choices=["tiny", "base", "small", "medium", "large"], help="Model size (default: medium).")
 
     args = parser.parse_args()
 

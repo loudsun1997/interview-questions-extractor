@@ -44,17 +44,21 @@ python transcribe.py /path/to/video.mp4
 
 ### Model Options
 
-```bash
-python transcribe.py video.mp4 --model base
-```
+Default is **medium** (recommended for accuracy).
 
-| Model  | Size    | Speed   | Accuracy |
-|--------|---------|---------|----------|
-| tiny   | 39 MB   | Fastest | Lower    |
-| base   | 74 MB   | Fast    | Good     |
-| small  | 244 MB  | Medium  | Better   |
-| medium | 769 MB  | Slow    | High     |
-| large  | 1.5 GB  | Slowest | Highest  |
+| Model  | Size    | Speed   | Accuracy            |
+|--------|---------|---------|---------------------|
+| tiny   | 39 MB   | Fastest | Lower               |
+| base   | 74 MB   | Fast    | Good                |
+| small  | 244 MB  | Medium  | Better              |
+| medium | 769 MB  | Slow    | High (default)      |
+| large  | 1.5 GB  | Slowest | Highest             |
+
+To use a different model:
+
+```bash
+python transcribe.py video.mp4 --model large
+```
 
 ## Output
 
@@ -86,4 +90,5 @@ After the first setup, the whole process takes only 2 minutes of attention - run
 ## License
 
 MIT
+
 
