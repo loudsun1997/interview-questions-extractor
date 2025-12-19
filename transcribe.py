@@ -1,10 +1,10 @@
 import whisper
 import argparse
 import os
-import warnings
-
-# Filter out FP16 warnings but keep tqdm progress bar
-warnings.filterwarnings("ignore", message="FP16 is not supported on CPU")
+import sys
+import threading
+import time
+from tqdm import tqdm
 
 def transcribe_video(video_path, model_size="base", output_format="txt"):
     """
@@ -19,23 +19,66 @@ def transcribe_video(video_path, model_size="base", output_format="txt"):
     print(f"Loading Whisper model ('{model_size}')...")
     
     # 2. Load the Whisper model
-    # Available models: tiny, base, small, medium, large
     try:
         model = whisper.load_model(model_size)
     except Exception as e:
         print(f"Error loading model: {e}")
         return
 
-    print(f"Transcribing '{video_path}'...")
-
-    # 3. Transcribe
-    # task="transcribe" will transcribe the audio in its original language.
-    # task="translate" will transcribe AND translate non-English audio into English.
-    
+    # 3. Transcribe with progress bar
     try:
-        # verbose=True shows Whisper's built-in progress bar (tqdm)
-        result = model.transcribe(video_path, fp16=False, language="en", verbose=True)
+        # Load audio to get duration for progress bar
+        print("Loading audio...")
+        audio = whisper.load_audio(video_path)
+        audio_duration = len(audio) / whisper.audio.SAMPLE_RATE
+        
+        # Shared state for progress tracking
+        transcription_done = threading.Event()
+        result_holder = [None]
+        error_holder = [None]
+        
+        def transcribe_thread():
+            try:
+                result_holder[0] = model.transcribe(
+            video_path, 
+                    fp16=False, 
+                    language="en",
+                    verbose=False
+                )
+            except Exception as e:
+                error_holder[0] = e
+            finally:
+                transcription_done.set()
+        
+        # Start transcription in background thread
+        thread = threading.Thread(target=transcribe_thread)
+        thread.start()
+        
+        # Show progress bar while transcribing
+        with tqdm(total=100, desc="Transcribing", unit="%",
+                  bar_format="{l_bar}{bar}| {percentage:3.0f}% [{elapsed}<{remaining}]") as pbar:
+            
+            start_time = time.time()
+            estimated_time = max(audio_duration / 10, 5)
+            
+            while not transcription_done.is_set():
+                elapsed = time.time() - start_time
+                progress = min(95, (elapsed / estimated_time) * 100)
+                pbar.n = int(progress)
+                pbar.refresh()
+                time.sleep(0.1)
+            
+            pbar.n = 100
+            pbar.refresh()
+        
+        thread.join()
+        
+        if error_holder[0]:
+            raise error_holder[0]
+        
+        result = result_holder[0]
         text = result["text"]
+        
     except Exception as e:
         print(f"Error during transcription: {e}")
         return
@@ -55,7 +98,6 @@ def transcribe_video(video_path, model_size="base", output_format="txt"):
     print(text[:200] + "..." if len(text) > 200 else text)
 
 if __name__ == "__main__":
-    # Set up command line arguments
     parser = argparse.ArgumentParser(description="Transcribe video to English text using Whisper.")
     parser.add_argument("video_path", type=str, help="Path to the video file.")
     parser.add_argument("--model", type=str, default="base", choices=["tiny", "base", "small", "medium", "large"], help="Model size (default: base).")
