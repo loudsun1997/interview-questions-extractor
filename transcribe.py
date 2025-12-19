@@ -3,8 +3,8 @@ import argparse
 import os
 import warnings
 
-# Filter out specific warnings to keep the output clean
-warnings.filterwarnings("ignore")
+# Filter out FP16 warnings but keep tqdm progress bar
+warnings.filterwarnings("ignore", message="FP16 is not supported on CPU")
 
 def transcribe_video(video_path, model_size="base", output_format="txt"):
     """
@@ -33,8 +33,8 @@ def transcribe_video(video_path, model_size="base", output_format="txt"):
     # task="translate" will transcribe AND translate non-English audio into English.
     
     try:
-        # verbose=None shows Whisper's built-in progress bar (tqdm)
-        result = model.transcribe(video_path, fp16=False, language="en", verbose=None)
+        # verbose=True shows Whisper's built-in progress bar (tqdm)
+        result = model.transcribe(video_path, fp16=False, language="en", verbose=True)
         text = result["text"]
     except Exception as e:
         print(f"Error during transcription: {e}")
